@@ -32,7 +32,7 @@ import os
 import glob
 from helpers import download_file
 
-supported_engines = dict()
+supported_engines = {}
 
 engines = glob.glob(os.path.join(os.path.dirname(__file__), 'engines', '*.py'))
 for engine in engines:
@@ -42,8 +42,8 @@ for engine in engines:
     if e.startswith('_'):
         continue
     try:
-        exec("from engines.%s import %s" % (e, e))
-        exec("engine_url = %s.url" % e)
+        exec(f"from engines.{e} import {e}")
+        exec(f"engine_url = {e}.url")
         supported_engines[engine_url] = e
     except Exception:
         pass
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     download_param = sys.argv[2].strip()
     if engine_url not in list(supported_engines.keys()):
         raise SystemExit('./nova2dl.py: this engine_url was not recognized')
-    exec("engine = %s()" % supported_engines[engine_url])
+    exec(f"engine = {supported_engines[engine_url]}()")
     if hasattr(engine, 'download_torrent'):
         engine.download_torrent(download_param)
     else:

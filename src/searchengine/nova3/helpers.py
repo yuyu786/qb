@@ -48,8 +48,14 @@ if "sock_proxy" in os.environ and len(os.environ["sock_proxy"].strip()) > 0:
     m = re.match(r"^(?:(?P<username>[^:]+):(?P<password>[^@]+)@)?(?P<host>[^:]+):(?P<port>\w+)$",
                  proxy_str)
     if m is not None:
-        socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, m.group('host'),
-                              int(m.group('port')), True, m.group('username'), m.group('password'))
+        socks.setdefaultproxy(
+            socks.PROXY_TYPE_SOCKS5,
+            m['host'],
+            int(m['port']),
+            True,
+            m['username'],
+            m['password'],
+        )
         socket.socket = socks.socksocket
 
 
@@ -61,7 +67,8 @@ def htmlentitydecode(s):
         if entity in html.entities.name2codepoint:
             return chr(html.entities.name2codepoint[entity])
         return " "  # Unknown entity: We replace with a space.
-    t = re.sub('&(%s);' % '|'.join(html.entities.name2codepoint), entity2char, s)
+
+    t = re.sub(f"&({'|'.join(html.entities.name2codepoint)});", entity2char, s)
 
     # Then convert numerical entities (such as &#233;)
     t = re.sub(r'&#(\d+);', lambda x: chr(int(x.group(1))), t)
@@ -120,4 +127,4 @@ def download_file(url, referer=None):
     file.write(dat)
     file.close()
     # return file path
-    return (path + " " + url)
+    return f"{path} {url}"

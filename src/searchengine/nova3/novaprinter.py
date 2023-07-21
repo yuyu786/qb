@@ -49,19 +49,19 @@ def anySizeToBytes(size_string):
         try:
             size = size_string.strip()
             unit = ''.join([c for c in size if c.isalpha()])
-            if len(unit) > 0:
+            if unit != "":
                 size = size[:-len(unit)]
         except:
             return -1
     if len(size) == 0:
         return -1
     size = float(size)
-    if len(unit) == 0:
+    if not unit:
         return int(size)
     short_unit = unit.upper()[0]
 
     # convert
     units_dict = {'T': 40, 'G': 30, 'M': 20, 'K': 10}
     if short_unit in units_dict:
-        size = size * 2**units_dict[short_unit]
+        size *= 2**units_dict[short_unit]
     return int(size)

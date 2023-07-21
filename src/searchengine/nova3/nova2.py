@@ -145,7 +145,7 @@ def run_search(engine_list):
 def main(args):
     supported_engines = initialize_engines()
 
-    if not args:
+    if not args or args[0] != "--capabilities" and len(args) < 3:
         raise SystemExit("./nova2.py [all|engine1[,engine2]*] <category> <keywords>\n"
                          "available engines: %s" % (','.join(supported_engines)))
 
@@ -153,12 +153,8 @@ def main(args):
         displayCapabilities(supported_engines)
         return
 
-    elif len(args) < 3:
-        raise SystemExit("./nova2.py [all|engine1[,engine2]*] <category> <keywords>\n"
-                         "available engines: %s" % (','.join(supported_engines)))
-
     # get only unique engines with set
-    engines_list = set(e.lower() for e in args[0].strip().split(','))
+    engines_list = {e.lower() for e in args[0].strip().split(',')}
 
     if 'all' in engines_list:
         engines_list = supported_engines
